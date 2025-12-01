@@ -15,10 +15,10 @@ public class Main {
         int code2 = sc.nextInt();
         // Please write your code here.
 
-        Product product1 = new Product('codetree', 50);
+        Product product1 = new Product("codetree", 50);
         Product product2 = new Product(id2, code2);
 
-        System.out.printf("product %d is %s\n", product1.name, product1.productCode);
-        System.out.printf("product %d is %s\n", product2.name, product2.productCode);
+        System.out.printf("product %d is %s\n", product1.productCode, product1.name);
+        System.out.printf("product %d is %s\n", product2.productCode, product2.name);
     }
 }
