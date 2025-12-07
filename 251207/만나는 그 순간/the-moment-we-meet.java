@@ -7,8 +7,8 @@ public class Main {
         int m = sc.nextInt();
         // 매초별 a와 b의 위치를 기록
 
-        int[] loca = new int[1001];
-        int[] locb = new int[1001];
+        int[] loca = new int[10000];
+        int[] locb = new int[10000];
 
         // A 이동 방향, 시간 
         int nowa = 0;
