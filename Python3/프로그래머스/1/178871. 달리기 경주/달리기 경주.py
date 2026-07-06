@@ -9,27 +9,20 @@ a를 부르면 a 순위를 -1 해주고 해당 순위에 있던 사람의 순위
 {a:1} 바꾸고 {1:b}에서 b를 찾아서 {b:2}로 바꾸고 {1:a}랑 {2:b}로 바꾸고
 '''
 def solution(players, callings):
-    answer = []
-    person_rank = {}
-    rank_person = {}
-    for i in range(len(players)):
-        rank_person[i+1] = players[i]
-        person_rank[players[i]] = i+1
+    # enumerate 이용하여 선수별 rank 찾기
+    player_rank = {player: i for i, player in enumerate(players)}
     
     for person in callings:
         # 불린 사람 기존 순위
-        rank = person_rank[person]
+        cur_idx = player_rank[person]
         # 불린 사람 앞 사람
-        before_person = rank_person[rank - 1]
+        front_idx = cur_idx - 1
         
-        person_rank[before_person] = rank
-        person_rank[person] = rank - 1
-        rank_person[rank] = before_person
-        rank_person[rank-1] = person
+        front_player = players[front_idx]
+        
+        players[cur_idx], players[front_idx] = players[front_idx], players[cur_idx]
     
-    for key in rank_person:
-        answer.append(rank_person[key])
+        player_rank[person] = front_idx
+        player_rank[front_player] = cur_idx
         
-        
-        
-    return answer
+    return players
