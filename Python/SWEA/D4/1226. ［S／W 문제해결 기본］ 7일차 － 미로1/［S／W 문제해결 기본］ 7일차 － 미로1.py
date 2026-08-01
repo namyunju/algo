@@ -1,14 +1,16 @@
 '''
 출발점에서 도착지점까지 가는 길 존재 여부
 '''
-def dfs(x, y):
+from collections import deque
+
+def bfs(x, y):
     dx = [0,0,1,-1]
     dy = [1,-1,0,0]
 
-    stack = [(x, y)]
-
-    while stack:
-        cx, cy = stack.pop()
+    queue = deque([(x, y)])
+    
+    while queue:
+        cx, cy = queue.popleft()
 
         for i in range(4):
             nx, ny = cx + dx[i], cy + dy[i]
@@ -17,9 +19,10 @@ def dfs(x, y):
 
                 if board[nx][ny] == 3:
                     return 1
+                    
                 if board[nx][ny] == 0:
                     board[nx][ny] = 1
-                    stack.append((nx, ny))
+                    queue.append((nx, ny))
     return 0
 
     
@@ -39,6 +42,6 @@ for _ in range(1, 11):
         if is_find:
             break
                 
-    ans = dfs(sx, sy)
+    ans = bfs(sx, sy)
     print(f'#{tc} {ans}')
     
