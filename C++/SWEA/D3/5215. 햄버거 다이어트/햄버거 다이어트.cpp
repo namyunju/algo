@@ -11,7 +11,6 @@
 재귀적으로 i번째 재료를 넣는 경우와 안 넣는 경우
 
 넣었을 때 칼로리가 L 넘으면 패스
-
 */
 #include <iostream>
 #include <vector>
