@@ -1,0 +1,54 @@
+// 유니온파인드
+
+#include <iostream>
+#include <vector>
+
+using namespace std;
+// vector 복사본이 아닌 원본 메모리 주소를 가리켜 사용
+int find_parent(vector<int>& parent, int x) {
+    if (parent[x] == x) return x;
+    return parent[x] = find_parent(parent, parent[x]);
+}
+
+void union_parent(vector<int>& parent, int a, int b) {
+    int rootA = find_parent(parent, a);
+    int rootB = find_parent(parent, b);
+    if (rootA != rootB) {
+        parent[rootB] = rootA;
+    }
+}
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+    
+    int T; 
+    cin >> T;
+    
+    for (int tc = 1; tc <= T; tc++) {
+        int n, m;
+        cin >> n >> m;
+        
+        vector<int> parent(n+1);
+        for (int i = 1; i <= n; i++) {
+            parent[i] = i;
+        }
+        cout << "#" << tc << " ";
+        
+        for (int i = 0; i < m; i++) {
+            int op, a, b;
+            cin >> op >> a >> b; 
+            if (op == 0) {
+                union_parent(parent, a, b);
+            } else if (op == 1) {
+                if (find_parent(parent, a) == find_parent(parent, b)) {
+                    cout << 1;
+                } else {
+                    cout << 0;
+                }
+            }
+        }
+        cout << "\n";
+    }
+    return 0;
+}
