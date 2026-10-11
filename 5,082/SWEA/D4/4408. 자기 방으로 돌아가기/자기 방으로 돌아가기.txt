@@ -1,0 +1,25 @@
+'''
+N명의 학생이 방으로 돌아감
+
+방은 1~400까지
+k번 방은
+(k+1)//2 번째 열에 존재
+
+서로 이동 경로가 겹치면 다른 시간대에 이동
+'''
+
+T = int(input())
+for tc in range(1, T+1):
+    N = int(input())
+    corridor = [0] * 201
+
+    for _ in range(N):
+        a, b = map(int, input().split())
+
+        start = (min(a, b) + 1) // 2
+        end = (max(a, b) + 1) // 2
+
+        for i in range(start, end + 1):
+            corridor[i] += 1
+
+    print(f'#{tc} {max(corridor)}')
