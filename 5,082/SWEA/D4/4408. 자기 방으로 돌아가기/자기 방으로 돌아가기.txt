@@ -1,25 +1,32 @@
-'''
-N명의 학생이 방으로 돌아감
+#include <iostream>
+#include <algorithm>
 
-방은 1~400까지
-k번 방은
-(k+1)//2 번째 열에 존재
+using namespace std;
 
-서로 이동 경로가 겹치면 다른 시간대에 이동
-'''
+int main() {
 
-T = int(input())
-for tc in range(1, T+1):
-    N = int(input())
-    corridor = [0] * 201
+    int T; 
+    cin >> T;
 
-    for _ in range(N):
-        a, b = map(int, input().split())
+    for (int tc = 1; tc <= T; ++tc) {
+        int N; 
+        cin >> N;
 
-        start = (min(a, b) + 1) // 2
-        end = (max(a, b) + 1) // 2
+        int corridor[201] = {0};
 
-        for i in range(start, end + 1):
-            corridor[i] += 1
+        for (int i = 0; i < N; i++) {
+            int a, b;
+            cin >> a >> b;
+            int start = (min(a, b) + 1)/2;
+            int end = (max(a, b) + 1)/2;
 
-    print(f'#{tc} {max(corridor)}')
+            for (int j = start; j <= end; j++) {
+                corridor[j]++;
+            }
+        }
+        int ans = *max_element(corridor, corridor + 201);
+
+        cout << "#" << tc << " " << ans << "\n";
+    }
+    return 0;
+}
