@@ -1,7 +1,28 @@
-T = int(input())
-for tc in range(1, T+1):
-    N = int(input())
-    nums = list(map(int, input().split()))
-    nums.sort();
+#include<iostream>
+#include<vector>
+#include<algorithm>
+using namespace std;
+
+int main(int argc, char** argv)
+{
+	int T;
+	cin>>T;
+    for (int tc=1; tc<=T; tc++) {
+        int N;
+        cin >> N;
+        vector<int> nums(N);
+        
+        for (int i=0; i<N; i++) {
+            cin >> nums[i];
+        }
+        sort(nums.begin(), nums.end());
+        cout << "#" << tc << " ";
+        for (int i = 0; i < N; i++) {
+            cout << nums[i] << " ";
+        }
+        cout << "\n";
+    }
     
-    print(f'#{tc}', *nums)
+    
+	return 0;
+}
