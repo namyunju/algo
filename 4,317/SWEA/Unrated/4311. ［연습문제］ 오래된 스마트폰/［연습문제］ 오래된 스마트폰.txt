@@ -1,169 +1,124 @@
 '''
-원하는 숫자 만드는 최소 터치횟수 구하는 프로그램
+원하는 숫자를 만들기 위한 최소 터치 횟수 
+각 값을 노드로 관리하고 해당 노드까지 도달하는 데 필요한 최소 터치 횟수
+가중치는 모두 양수임
+>> 출발점에서 원하는 지점까지 최단 거리 다익스트라.
 
-계산범위: 0~999 음수나 999 초과 불가
-
-연산은 순차적으로
-나누기는 정수만 남음
-
-연산 필요하면 '=' 1회 터치. 필요없으면 '=' 터치 안해도 됨
-
-최대 터치 제한 횟수: M
-M회 이하로 W를 만들 수 없다면 -1 출력
-
-터치 가능한 숫자의 개수 N은 1~10이하 자연수 (10미만이 맞지않나)
-터치 가능한 연산자 개수 O는 1부터 4이하 자연수
-M은 4이상 20이하 (작다)
 '''
 '''
-입력 가능한 숫자, 사용 가능한 연산자, 목표 숫자, 제한 횟수
-최소 횟수를 구하는 거니까 
+다음에 누를 것을 하나씩 선택하는 경우 연산이 어려워짐
+2 * 인 상태에서 
+2 * 3이 될지
+2 * 32가 될지
+이걸 매번 하나씩 고려해서 계산하기 어려움. 
+>> 가능한 모든 숫자를 다 준비해두고 활용. 
+어차피 사용 가능한 숫자는 10개 이하. 전부 만들어도 최대 1000개임.
 
-그냥 가능한 모든 경우를 다 한다고 쳐보자
-맨 첫 터치는 숫자여야만 하고
-두 번째 터치부터는 숫자와 연산자 중 하나
-앞 터치가 연산자였다면 다음은 무조건 숫자
-앞 터치가 숫자였다면 다음은 숫자나 연산자
-다만 앞 연산자가 나누기였다면 숫자는 0안됨
-그리고 현재까지 계산 결과가 0~999벗어나도 안됨
+중단 조건
+현재 터치 횟수 + 이후 최소 필요 터치 횟수 > M
+연산 결과가 0미만 또는 999 초과
 
-만약 원하는 숫자가 된다면 정답 갱신
-터치 횟수 넘어가면 그만
-
-연산없이 숫자 만들 수 있다면 그게 최소임
 '''
-'''
-놓친 것
-16 * 62 같은 연산자 뒤에 오는 숫자가 두 자리 이상의 수인 경우
->> 계산은 다음 연산자가 등장한 시점에서 이루어져야 함.
 
-현재 보유한 연산자를 기억해두고 있어야 함
-dfs(터치수, 현재 결과, 이전 터치, 현재 연산중인 연산자)
-이전 터치가 연산자였다면 다음 터치는 숫자
-그러나 계산은 이번 터치가 연산자일 때만 일어남
-'''
-'''
-최적화
-이전 탐색 반복 금지
-state (현재값, 이전 선택, 연산자)
-visited로 관리
+import heapq
 
-연산자 선택시 남은 터치횟수가 M-3은 되어야 함.
-'''
-def dfs(cnt, now_result, pre, op):
-    global ans
-
-    if cnt >= ans:
-        return
-
-    state = (now_result, pre, op)
-    if state in visited:
-        if visited[state] <= cnt:
-            return
-    visited[state] = cnt
-    
-    if cnt == M-1:
-        if op != 0 and pre not in ['+','-','*','/']:
-            if op == '+':
-                nxt_num = now_result + pre
-            elif op == '-':
-                nxt_num = now_result - pre
-            elif op == '*':
-                nxt_num = now_result * pre
-            elif op == '/' and pre != 0:
-                nxt_num = now_result // pre
-            else:
-                return
-    
-            if nxt_num == target:
-                ans = min(ans, cnt + 1)
-        return
-    # 가능한 다음 선택
-    # 이전 선택이 숫자였면 숫자를 이어붙이거나 연산자
-    # 이전 선택이 연산자였다면 숫자
-    # 단 나누기였다면 0을 제외한 숫자 
-    if pre == '+':
-        for num in nums:
-            dfs(cnt+1, now_result, num, '+')
-
-    elif pre == '-':
-        for num in nums:
-            dfs(cnt+1, now_result, num, '-')
-
-    elif pre == '/':
-        for num in nums:
-            if num != 0:
-                dfs(cnt+1, now_result, num, '/')
-    
-    elif pre == '*':
-        for num in nums:
-            dfs(cnt+1, now_result, num, '*')
-
-    # 이전 선택이 숫자였을 때
-    # 이번 선택이 숫자라면 현재 숫자에 이어붙이고
-    # 이번 선택이 연산자라면 앞선 계산을 마무리하고 넘어감
-    else:
-        # 아직 연산자를 사용한 적이 없을 때
-        if op == 0:
-            # 숫자를 선택
-            for num in nums:
-                nxt_num = now_result*10 + num
-                if nxt_num <= 999:
-                    dfs(cnt+1, nxt_num, 0, 0)
-            # 연산자를 선택
-            if cnt + 3 <= M:
-                for num in ops_idx:
-                    dfs(cnt+1, now_result, ops[num], ops[num])
-                
-        else:
-            # 이번 선택이 숫자라면
-            for num in nums:
-                nxt_num = 10*pre+num
-                if nxt_num <= 999:
-                    dfs(cnt+1, now_result, nxt_num, op)
-            # 이번 선택이 연산자라면
-            # 현재까지 숫자 계산
-            if op == '+':
-                nxt_num = now_result + pre
-            elif op == '-':
-                nxt_num = now_result - pre
-            elif op == '/':
-                nxt_num = now_result // pre
-            elif op == '*':
-                nxt_num = now_result * pre
-
-            if nxt_num == target and cnt+1 <= M:
-                ans = min(ans, cnt+1)
-                return
-                
-            if 0 <= nxt_num <= 999:
-                if cnt +3 <= M:
-                    for op_idx in ops_idx:
-                        dfs(cnt+1, nxt_num, ops[op_idx], ops[op_idx])
-            
-    
 T = int(input())
 for tc in range(1, T+1):
-    INF = float('inf')
-    ans = INF
-    visited = {}
     N, O, M = map(int, input().split())
-    nums = list(map(int, input().split()))
-    ops_idx = list(map(int, input().split()))
-    ops = [0, '+', '-', '*', '/']
-    target = int(input())
+    able_nums = set(input().split())
+    ops = list(map(int, input().split()))
+    W = int(input())
+    INF = float('inf')
+    ans = -1
 
-    target_s = set(map(int, str(target)))
+    only_num = True
+    str_W = str(W)
+    for s in str_W:
+        if s not in able_nums:
+            only_num = False
+            break
 
-    if (target_s.issubset(nums)):
-        ans = len(str(target))
+    if only_num:
+        ans = len(str_W)
+        print(f'#{tc} {ans}')
+        continue
 
-    else:
-        for num in nums:
-            dfs(1, num, num, 0)
+    # 생성 가능 숫자 모음
+    # 자릿수를 인덱스로 모아두기
+    numbers = [[], [], [], []]
 
-    if ans == INF:
-        ans = -1
-            
+    for n in range(1000):
+        s = str(n)
+        possible = True
+
+        for d in s:
+            if d not in able_nums:
+                possible = False
+                break
+        if possible:
+            numbers[len(s)].append(n)
+
+    # 각 숫자까지의 최소 터치 횟수
+    dist = [INF] * 1000
+    pq = []
+
+    # 시작
+    # 맨처음 입력은 숫자. 가능한 모든 숫자를 투입.
+    # 거리는 숫자의 길이
+    # (터치 횟수, 현재 숫자)
+    for length in range(1, 4):
+        for n in numbers[length]:
+            dist[n] = length
+            heapq.heappush(pq, (length, n))
+
+    # 최소 터치 횟수부터 확인
+    while pq:
+        now_d, value = heapq.heappop(pq)
+
+        # 이미 더 짧은 경로가 발견된 경우 제외
+        if now_d > dist[value]:
+            continue
+
+        if value == W:
+            ans = now_d + 1
+            break
+
+        # 추가 연산 시 최소 3회의 터치 필요
+        # 연산자, 숫자, 등호
+        if now_d + 3 > M:
+            continue
+
+        # 다음 숫자 최대 길이
+        # 세자리거나 남은 터치횟수에 따라 그 이하 (연산자 1, 등호 1)
+        max_len = min(3, M - now_d - 2)
+
+        for length in range(1, max_len + 1):
+            cost = now_d + 1 + length
+
+            for n in numbers[length]:
+                for op in ops:
+
+                    if op == 1:  
+                        r = value + n
+
+                    elif op == 2:  
+                        r = value - n
+
+                    elif op == 3:  
+                        r = value * n
+
+                    else:  
+                        if n == 0:
+                            continue
+                        r = value // n
+
+                    # 계산 범위 검사
+                    if not (0 <= r <= 999):
+                        continue
+
+                    # 기존 최소 터치 횟수보다 작은 경우만 갱신
+                    if cost < dist[r]:
+                        dist[r] = cost
+                        heapq.heappush(pq, (cost, r))
+
     print(f'#{tc} {ans}')
-    
