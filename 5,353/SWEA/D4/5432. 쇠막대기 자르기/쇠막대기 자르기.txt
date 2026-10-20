@@ -1,30 +1,36 @@
-'''
-() 가 레이저 하나
+#include <iostream>
+#include <string>
+using namespace std;
 
+int main() {
+    int T;
+    cin >> T;
 
-열린 괄호 개수 카운트
-닫힌괄호 등장 
-열린괄호 직후 닫힌괄호라면 레이저인데
-닫힌괄호 직후 닫힌괄호면 선이 끊긴 거
+    for (int tc = 1; tc <= T; tc++) {
+        string problem;
+        cin >> problem;
 
-그냥 닫힌괄호 나오면 (현재 열린 괄호 개수 - 1) 
-열린괄호 등장마다 +1
-닫힌괄호 등장마다 -1 
-'''
+        int ans = 0;
+        int opened = 0;
 
-T = int(input())
-for tc in range(1, T+1):
-    problem = input()
-    ans = 0
-    op = 0
-    for i in range(len(problem)):
-        if problem[i] == '(':
-            op += 1
-        else:
-            op -= 1
-            if problem[i-1] == '(':
-                ans += op
-            else:
-                ans += 1
-    
-    print(f'#{tc} {ans}')
+        for (int i = 0; i < problem.size(); i++) {
+            if (problem[i] == '(') {
+                opened++;
+            }
+            else {
+                opened--;
+
+                if (problem[i - 1] == '(') {
+                    ans += opened;
+                }
+                else {
+                    ans++;
+                }
+            }
+        }
+
+        cout << "#" << tc << " " << ans << '\n';
+    }
+
+    return 0;
+}
