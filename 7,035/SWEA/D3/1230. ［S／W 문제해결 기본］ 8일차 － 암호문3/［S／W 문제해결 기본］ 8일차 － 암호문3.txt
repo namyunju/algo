@@ -1,0 +1,61 @@
+'''
+암호문 N개 모아놓은 암호문 뭉치
+
+명령어 3가지
+
+I 
+x, y, s 
+x번째 암호문 뒤에 y개의 암호문을 삽입
+s는 y개의 암호문들
+
+D 
+x, y
+x번째 암호문 뒤부터 y개 암호문 삭제
+
+A 
+y, x
+암호문 뭉치 맨 뒤에 y개의 암호문 덧붙임
+
+결과 암호문 뭉치 10개 출력
+
+'''
+
+T = 10
+for tc in range(1, T+1):
+    N = int(input())
+    passwords = list(map(int, input().split()))
+    M = int(input())
+    commands = input().split()
+
+    idx = 0
+
+    for i in range(M):
+        cmd = commands[idx]
+        idx += 1
+
+        if cmd == 'I':
+            x = int(commands[idx])
+            y = int(commands[idx+1])
+            idx += 2
+
+            values = list(map(int, commands[idx:idx+y]))
+            idx += y
+
+            passwords[x:x] = values
+
+        elif cmd == 'D':
+            x = int(commands[idx])
+            y = int(commands[idx+1])
+            idx += 2
+
+            del passwords[x:x+y]
+
+        else:
+            y = int(commands[idx])
+            idx += 1
+
+            values = list(map(int, commands[idx:idx+y]))
+            idx += y
+
+            passwords.extend(values)
+    print(f'#{tc}', *passwords[:10])
