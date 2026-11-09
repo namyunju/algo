@@ -1,0 +1,48 @@
+'''
+최대 100명
+연쇄적으로 퍼져나감
+
+입력받는 데이터 길이와 시작점
+
+재연락 불가 >> visited로 관리
+
+동시에 여러명에게 연락이 갈 수 있음
+deque
+
+'''
+from collections import deque
+
+T = 10
+for tc in range(1, T+1):
+    N, start = map(int, input().split())
+    connection = [[] for _ in range(101)]
+    visited = [False] * 101
+    visited[start] = True
+    queue = deque([start])
+    pairs = list(map(int, input().split()))
+    for i in range(N//2):
+        s, e = pairs[2*i], pairs[2*i+1]
+        connection[s].append(e)
+
+    while queue:
+        size = len(queue)
+        # 매시행마다 max_num 다시 뽑음
+        max_num = 0
+
+        for i in range(size):
+            now = queue.popleft()
+            max_num = max(max_num, now)
+
+            for nxt in connection[now]:
+                if not visited[nxt]:
+                    visited[nxt] = True
+                    queue.append(nxt)
+                    
+    ans = max_num
+    print(f'#{tc} {ans}')
+    
+        
+        
+        
+        
+    
