@@ -1,0 +1,43 @@
+#include<iostream>
+#include<cstring>
+
+using namespace std;
+
+// 각 정점에서 갈 수 있는 정점
+int path1[100], path2[100];
+bool visited[100];
+
+// 현위치에서 목적지 도달 가능 시 종료
+bool dfs(int cur) {
+    if (cur == 99) return true;
+    visited[cur] = true;
+    
+    if (path1[cur] != -1 && !visited[path1[cur]] && dfs(path1[cur])) return true;
+    if (path2[cur] != -1 && !visited[path2[cur]] && dfs(path2[cur])) return true;
+    
+    return false;
+}
+
+int main(int argc, char** argv)
+{
+	int T = 10;
+    for (int tc = 1; tc <= T; tc++) {
+        int t, n;
+        cin >> t >> n;
+        
+        memset(path1, -1, sizeof(path1));
+        memset(path2, -1, sizeof(path2));
+        memset(visited, false, sizeof(visited));
+        
+        for (int i = 0; i < n; i++) {
+            int from, to;
+            cin >> from >> to;
+            if (path1[from] == -1) path1[from] = to;   
+            else path2[from] = to;                  
+        }
+        cout << "#" << tc << " " << (dfs(0) ? 1 : 0) << "\n";
+    }
+
+
+	return 0;
+}
